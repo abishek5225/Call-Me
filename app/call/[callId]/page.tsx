@@ -32,7 +32,7 @@ export default function HomePage(){
       />
       <br />
 
-      <button onClick={joinCall}>Join</button>
+      <button  onClick={joinCall}>Join</button>
         </main>
     )
 }
