@@ -71,5 +71,36 @@ export function useWebRTC(roomId: string) {
   //main setup effect
   useEffect(() => {
     let mounted = true;
+
+    const init = async () => {
+
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+        if (!mounted) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+
+        localStreamRef.current = stream;
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+      }catch {
+        setError("Unable to access camera and microphone. Please grant permissions and try again.");
+        return;
+      }
+
+      // Connect to signaling server
+      const socket = io(SIGNALING_SERVER, { transports: ["websocket"] });
+      socketRef.current = socket;
+
+      socket.on("connect", () => {
+        socket.emit("join-room", { roomId });
+        setStatus("waiting");
+      });
+
+      
+    }
   })
 }
