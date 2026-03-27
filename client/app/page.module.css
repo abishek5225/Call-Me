@@ -1,0 +1,179 @@
+
+.main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Animated grid background ───────────────────────────── */
+.grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.cell {
+  border: 1px solid var(--border);
+}
+
+/* Staggered glow pulses on selected cells */
+.cell:nth-child(odd)  { animation: pulse 6s ease-in-out infinite; }
+.cell:nth-child(3n)   { animation: pulse 9s ease-in-out infinite 1s; }
+.cell:nth-child(7n)   { animation: pulse 7s ease-in-out infinite 2s; }
+.cell:nth-child(11n)  { animation: pulse 5s ease-in-out infinite 0.5s; }
+
+@keyframes pulse {
+  0%, 100% { background: transparent; }
+  50%       { background: rgba(0, 255, 136, 0.05); }
+}
+
+/* ── Hero content block ─────────────────────────────────── */
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  text-align: center;
+  padding: 48px 24px;
+  max-width: 520px;
+  width: 100%;
+}
+
+/* ── Badge ──────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  padding: 6px 16px;
+  border-radius: 999px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: blink 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}
+
+/* ── Title ──────────────────────────────────────────────── */
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titleSolid {
+  font-size: clamp(72px, 16vw, 128px);
+  color: var(--text);
+}
+
+/* Outline-only text for second word */
+.titleOutline {
+  font-size: clamp(72px, 16vw, 128px);
+  -webkit-text-stroke: 2px var(--accent);
+  color: transparent;
+}
+
+/* ── Description ────────────────────────────────────────── */
+.description {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+
+/* ── CTA button ─────────────────────────────────────────── */
+.button {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 16px 40px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0);
+  transition: background 0.15s;
+}
+
+.button:hover::after  { background: rgba(255, 255, 255, 0.15); }
+.button:active        { transform: scale(0.97); }
+.button:disabled      { opacity: 0.6; cursor: not-allowed; }
+.button:disabled:active { transform: none; }
+
+.btnInner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Spinning loader shown while redirecting */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Hint text ──────────────────────────────────────────── */
+.hint {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ── Corner version tag ─────────────────────────────────── */
+.corner {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  display: flex;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}

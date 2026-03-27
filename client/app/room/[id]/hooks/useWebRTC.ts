@@ -15,9 +15,9 @@ const ICE_SERVERS: RTCIceServer[] = [
 export function useWebRTC(roomId: string) {
   const router = useRouter();
 
-  const localVideoRef  = useRef<HTMLVideoElement>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement>(null);
-
+  const localVideoRef  = useRef<HTMLVideoElement | null>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  
   const socketRef      = useRef<Socket | null>(null);
   const pcRef          = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -159,6 +159,60 @@ export function useWebRTC(roomId: string) {
         pcRef.current = null;
       });
 
-    }
-  })
+
+      //  Room already has 2 people
+      socket.on("room-full", () => {
+        setError("This room already has 2 participants.");
+      });
+    };
+
+    init();
+
+      //Cleanup on unmount — stop all tracks close connections
+    return () => {
+      mounted = false;
+      localStreamRef.current?.getTracks().forEach((track) => track.stop());
+      pcRef.current?.close();
+      socketRef.current?.disconnect();
+    };
+  }, [roomId, createPeerConnection]);
+
+  //controls for muting mic and turning off camera
+  const toggleMute = () => {
+    const track = localStreamRef.current?.getAudioTracks()[0];
+    if (!track) return;
+    track.enabled = !track.enabled;
+    setIsMuted(!track.enabled);
+  };
+ 
+  const toggleCamera = () => {
+    const track = localStreamRef.current?.getVideoTracks()[0];
+    if (!track) return;
+    track.enabled = !track.enabled;
+    setIsCameraOff(!track.enabled);
+  };
+ 
+  const hangUp = () => {
+    socketRef.current?.disconnect();
+    pcRef.current?.close();
+    localStreamRef.current?.getTracks().forEach((t) => t.stop());
+    router.push("/");
+  };
+ 
+  // ── Return everything the UI needs ───────────────────────────
+  return {
+    // Video element refs — attach these to <video> elements
+    localVideoRef,
+    remoteVideoRef,
+    // Connection state
+    status,
+    error,
+    // Media control state
+    isMuted,
+    isCameraOff,
+    // Handlers
+    toggleMute,
+    toggleCamera,
+    hangUp,
+  };
 }

@@ -5,8 +5,8 @@ import { ConnectionStatus, STATUS_CONFIG } from "../types";
 import styles from "../room.module.css";
  
 interface VideoStageProps {
-  localVideoRef:  RefObject<HTMLVideoElement>;
-  remoteVideoRef: RefObject<HTMLVideoElement>;
+  localVideoRef:  RefObject<HTMLVideoElement | null>;
+  remoteVideoRef: RefObject<HTMLVideoElement | null>;
   status:         ConnectionStatus;
   isCamOff:       boolean;
 }
